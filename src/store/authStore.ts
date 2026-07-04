@@ -36,7 +36,19 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       console.error('Error loading profile:', error);
       return;
     }
-    set({ profile: data as Profile | null });
+    if (data) {
+      set({ profile: data as Profile | null });
+    } else {
+      // Profile might not exist yet (trigger hasn't fired). Retry once after a short delay.
+      setTimeout(async () => {
+        const { data: retryData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .maybeSingle();
+        if (retryData) set({ profile: retryData as Profile | null });
+      }, 1000);
+    }
   },
 
   refreshProfile: async () => {
@@ -62,12 +74,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     });
     set({ loading: false });
     if (error) return { error: error.message };
+    // Profile is auto-created by the handle_new_user() database trigger.
+    // Do NOT upsert here — the session isn't established yet after signUp,
+    // so an RLS-protected write would fail with a misleading error.
     if (data.user) {
-      // Profile is auto-created by trigger, but let's ensure username is set
-      await supabase.from('profiles').upsert({
-        id: data.user.id,
-        username,
-      }, { onConflict: 'id' });
+      // If email confirmation is off, Supabase returns a session immediately.
+      // The onAuthStateChange listener will load the profile automatically.
+      // If no session is returned, the user needs to sign in manually.
     }
     return { error: null };
   },
