@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-base-bg text-white font-sans antialiased;
+    overscroll-behavior: none;
+  }
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+    background-clip: content-box;
+  }
+  input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+  input[type='range']::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 2px;
+  }
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: white;
+    margin-top: -4px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  input[type='range']:hover::-webkit-slider-thumb {
+    opacity: 1;
+  }
+}
+
+@layer components {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .card {
+    @apply bg-base-card rounded-2xl transition-all duration-300;
+  }
+  .card-hover {
+    @apply hover:bg-base-hover;
+  }
+  .btn-accent {
+    @apply bg-accent text-black font-bold rounded-full px-6 py-3 transition-all hover:scale-105 hover:bg-accent-light active:scale-95;
+  }
+  .text-gradient {
+    @apply bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent;
+  }
+}
+
+.equalizer-bar {
+  width: 3px;
+  background: #1DB954;
+  border-radius: 1px;
+  animation: pulseBar 0.8s ease-in-out infinite;
+}
